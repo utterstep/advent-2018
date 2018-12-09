@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate nom;
+
 mod log;
 
 fn main() {
