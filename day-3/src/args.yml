@@ -1,0 +1,22 @@
+name: advent-2018-day-3
+version: "0.1"
+author: Vlad Stepanov <8uk.8ak@gmail.com>
+about: "Advent of Code-2018: Day 3 solver"
+
+args:
+  - input:
+      short: i
+      long: input
+      value_name: FILE
+      help: Sets file containing puzzle input
+      default_value: full.txt
+      takes_value: true
+  - part:
+      short: p
+      long: part
+      help: Specify which puzzle part to solve
+      required: true
+      takes_value: true
+      possible_values:
+        - one
+        - two

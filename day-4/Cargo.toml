@@ -1,0 +1,12 @@
+[package]
+name = "day-4"
+version = "0.1.0"
+authors = ["Vlad Stepanov"]
+edition = "2018"
+
+[dependencies]
+chrono = "0.4"
+
+nom = "^4.1"
+
+clap = "2.32"
