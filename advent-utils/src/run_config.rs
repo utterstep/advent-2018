@@ -1,4 +1,8 @@
-use serde::{de, de::{DeserializeOwned, Unexpected}, Deserialize, Deserializer};
+use serde::{
+    de,
+    de::{DeserializeOwned, Unexpected},
+    Deserialize, Deserializer,
+};
 use serde_derive::Deserialize;
 
 #[derive(Debug)]
@@ -38,14 +42,13 @@ impl Config {
     }
 }
 
-pub fn get_config() -> Result<Config, envy::Error>
-{
+pub fn get_config() -> Result<Config, envy::Error> {
     get_custom_config()
 }
 
 pub fn get_custom_config<T>() -> Result<T, envy::Error>
 where
-    T: DeserializeOwned
+    T: DeserializeOwned,
 {
     envy::prefixed("APP_").from_env::<T>()
 }

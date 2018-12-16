@@ -33,16 +33,12 @@ impl Boundaries {
     }
 
     pub(super) fn is_inner_point(&self, x: i32, y: i32) -> bool {
-        x >= self.left && x <= self.right &&
-        y >= self.bottom && x <= self.top
+        x >= self.left && x <= self.right && y >= self.bottom && x <= self.top
     }
 
     pub(super) fn is_edge_point(&self, x: i32, y: i32) -> bool {
-        self.is_inner_point(x, y) &&
-        (
-            self.left == x || self.right == x ||
-            self.top == y || self.bottom == y
-        )
+        self.is_inner_point(x, y)
+            && (self.left == x || self.right == x || self.top == y || self.bottom == y)
     }
 }
 
@@ -135,9 +131,6 @@ mod tests {
             }
         }
 
-        assert_eq!(
-            b.into_iter().collect::<Vec<_>>(),
-            should_iterate_over
-        );
+        assert_eq!(b.into_iter().collect::<Vec<_>>(), should_iterate_over);
     }
 }
