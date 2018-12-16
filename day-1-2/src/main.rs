@@ -1,20 +1,10 @@
-use std::{
-    collections::{HashSet},
-    error::{Error},
-    fs::{File},
-    io::{
-        prelude::*,
-    },
-    path::{Path},
-};
+use std::{collections::HashSet, error::Error, fs::File, io::prelude::*, path::Path};
 
-const INPUT_FILE: &'static str = "input.txt";
+const INPUT_FILE: &str = "input.txt";
 
 fn get_data<P: AsRef<Path>>(file_name: P) -> std::io::Result<String> {
     let mut f = File::open(file_name)?;
-    let mut data = String::with_capacity(
-        f.metadata()?.len() as usize
-    );
+    let mut data = String::with_capacity(f.metadata()?.len() as usize);
 
     f.read_to_string(&mut data)?;
 
@@ -22,23 +12,24 @@ fn get_data<P: AsRef<Path>>(file_name: P) -> std::io::Result<String> {
 }
 
 struct RepeatChecker<T> {
-    inner_set: HashSet<T>
+    inner_set: HashSet<T>,
 }
 
 impl<T> RepeatChecker<T>
 where
-    T: Eq + std::hash::Hash + Copy
+    T: Eq + std::hash::Hash + Copy,
 {
     fn new() -> Self {
         Self {
-            inner_set: HashSet::new()
+            inner_set: HashSet::new(),
         }
     }
 
     fn check(&mut self, value: T) -> Option<T> {
-        match self.inner_set.insert(value) {
-            true => None,
-            false => Some(value)
+        if self.inner_set.insert(value) {
+            None
+        } else {
+            Some(value)
         }
     }
 }

@@ -1,7 +1,3 @@
 mod entry;
-mod loader;
 
-pub use self::{
-    entry::LogEntry,
-    loader::from_file
-};
+pub use self::entry::{Action as LogAction, LogEntry};

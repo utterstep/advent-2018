@@ -1,14 +1,13 @@
 use std::{
-    collections::BTreeSet,
     error::Error,
+    fmt::Debug,
     fs::File,
-    io::{Read, BufReader},
+    io::{BufReader, Read},
     path::Path,
+    str::FromStr,
 };
 
-use crate::log::entry::LogEntry;
-
-fn read_file<P: AsRef<Path>>(p: P) -> Result<String, Box<Error>> {
+pub fn read_file<P: AsRef<Path>>(p: P) -> Result<String, Box<Error>> {
     let file = File::open(p)?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
@@ -17,7 +16,12 @@ fn read_file<P: AsRef<Path>>(p: P) -> Result<String, Box<Error>> {
     Ok(contents)
 }
 
-pub fn from_file<P: AsRef<Path>>(p: P) -> Result<BTreeSet<LogEntry>, Box<Error>> {
+pub fn parse_file<P, T>(p: P) -> Result<Vec<T>, Box<Error>>
+where
+    P: AsRef<Path>,
+    T: FromStr,
+    <T as FromStr>::Err: Debug,
+{
     let contents = read_file(p)?;
 
     Ok(contents

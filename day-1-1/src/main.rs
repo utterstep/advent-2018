@@ -1,16 +1,10 @@
-use std::{
-    error::Error,
-    fs::File,
-    io::prelude::*,
-};
+use std::{error::Error, fs::File, io::prelude::*};
 
-const INPUT_FILE: &'static str = "input.txt";
+const INPUT_FILE: &str = "input.txt";
 
 fn main() -> Result<(), Box<Error>> {
     let mut f = File::open(INPUT_FILE)?;
-    let mut buf = String::with_capacity(
-        f.metadata()?.len() as usize
-    );
+    let mut buf = String::with_capacity(f.metadata()?.len() as usize);
 
     f.read_to_string(&mut buf)?;
 

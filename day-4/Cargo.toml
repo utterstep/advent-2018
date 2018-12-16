@@ -10,3 +10,9 @@ chrono = "0.4"
 nom = "^4.1"
 
 clap = "2.32"
+
+[dependencies.advent-utils]
+path = "../advent-utils"
+
+default-features = false
+features = ["nom-macro"]
