@@ -4,6 +4,7 @@ use std::{error::Error, fmt};
 pub(crate) struct Node {
     children: Vec<Node>,
     metadata: Vec<usize>,
+    value: Option<usize>,
 }
 
 #[derive(Debug)]
@@ -31,6 +32,7 @@ impl Node {
         Self {
             children: Vec::with_capacity(children_count),
             metadata: Vec::with_capacity(metadata_count),
+            value: None,
         }
     }
 
@@ -76,15 +78,26 @@ impl Node {
             .sum()
     }
 
-    pub(crate) fn value(&self) -> usize {
-        if self.children.is_empty() {
-            self.metadata.iter().sum()
+    pub(crate) fn value(&mut self) -> usize {
+        if let Some(value) = self.value {
+            return value;
+        };
+
+        let metadata = &self.metadata;
+        let children = &mut self.children;
+
+        let value = if children.is_empty() {
+            metadata.iter().sum()
         } else {
-            self.metadata
+            metadata
                 .iter()
-                .map(|idx| self.children.get(*idx - 1).map_or(0, |child| child.value()))
+                .map(|idx| children.get_mut(*idx - 1).map_or(0, |child| child.value()))
                 .sum()
-        }
+        };
+
+        self.value.replace(value);
+
+        value
     }
 }
 
@@ -207,7 +220,7 @@ mod tests {
 
         let node = Node::from_iter(&mut input);
         assert!(node.is_ok());
-        let node = node.unwrap();
+        let mut node = node.unwrap();
 
         assert_eq!(node.value(), 6);
 
@@ -217,8 +230,26 @@ mod tests {
 
         let node = Node::from_iter(&mut input);
         assert!(node.is_ok());
-        let node = node.unwrap();
+        let mut node = node.unwrap();
 
         assert_eq!(node.value(), 21);
+    }
+
+    #[test]
+    fn test_value_cache() {
+        let mut input = "2 3 0 2 1 2 0 3 5 6 7 1 2 3"
+            .split_whitespace()
+            .map(|n| n.parse().unwrap());
+
+        let node = Node::from_iter(&mut input);
+        assert!(node.is_ok());
+        let mut node = node.unwrap();
+
+        assert!(node.value.is_none());
+        assert_eq!(node.value(), 21);
+        assert_eq!(node.value, Some(21));
+
+        assert_eq!(node.value(), 21);
+        assert_eq!(node.value, Some(21));
     }
 }

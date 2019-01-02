@@ -9,7 +9,7 @@ use self::node::Node;
 fn main() -> Result<(), Box<Error>> {
     let config = get_config()?;
     let input_data = read_file(config.input_file)?;
-    let node = Node::from_iter(&mut input_data.split_whitespace().map(|n| n.parse().unwrap()))?;
+    let mut node = Node::from_iter(&mut input_data.split_whitespace().map(|n| n.parse().unwrap()))?;
 
     match config.part {
         Part::One => {
