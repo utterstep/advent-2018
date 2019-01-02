@@ -38,28 +38,34 @@ impl InstructionGraph {
     }
 
     pub(crate) fn add_link(&mut self, from: char, to: char) {
-        self.nodes.entry(to).or_insert_with(|| Instruction::new(to)).set_incoming(from);
-        let from_node = self.nodes.entry(from).or_insert_with(|| Instruction::new(from));
+        self.nodes
+            .entry(to)
+            .or_insert_with(|| Instruction::new(to))
+            .set_incoming(from);
+        let from_node = self
+            .nodes
+            .entry(from)
+            .or_insert_with(|| Instruction::new(from));
 
         from_node.add_new_link(to)
     }
 
     pub(crate) fn get_starting_nodes<'a>(&'a self) -> impl Iterator<Item = char> + 'a {
-        self.nodes
-            .iter()
-            .filter_map(|(c, node)| {
-                if node.inbound.is_empty() {
-                    Some(*c)
-                } else {
-                    None
-                }
-            })
+        self.nodes.iter().filter_map(|(c, node)| {
+            if node.inbound.is_empty() {
+                Some(*c)
+            } else {
+                None
+            }
+        })
     }
 
     pub(crate) fn visit_node(&mut self, node: char) -> Vec<char> {
         let instruction = self.nodes.remove(&node).unwrap();
 
-        instruction.outbound.into_iter()
+        instruction
+            .outbound
+            .into_iter()
             .filter(|to| {
                 let dest = self.nodes.get_mut(to).unwrap();
 

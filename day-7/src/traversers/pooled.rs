@@ -1,13 +1,6 @@
-use std::{
-    cmp::Reverse,
-    collections::BinaryHeap,
-    num::NonZeroUsize,
-};
+use std::{cmp::Reverse, collections::BinaryHeap, num::NonZeroUsize};
 
-use crate::{
-    graph::InstructionGraph,
-    workers::Pool,
-};
+use crate::{graph::InstructionGraph, workers::Pool};
 
 const LETTER_A: i32 = 'A' as i32;
 
@@ -32,7 +25,11 @@ pub(crate) struct PooledTraverser {
 }
 
 impl PooledTraverser {
-    pub(crate) fn new(graph: InstructionGraph, work_price_delta: i32, n_workers: NonZeroUsize) -> Self {
+    pub(crate) fn new(
+        graph: InstructionGraph,
+        work_price_delta: i32,
+        n_workers: NonZeroUsize,
+    ) -> Self {
         let tasks = graph
             .get_starting_nodes()
             .map(|node| Reverse((0, node)))
@@ -73,7 +70,7 @@ impl Iterator for PooledTraverser {
                 self.graph
                     .visit_node(node)
                     .into_iter()
-                    .map(|node| Reverse((finish_time, node)))
+                    .map(|node| Reverse((finish_time, node))),
             );
         }
 

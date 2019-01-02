@@ -1,7 +1,4 @@
-use std::{
-    collections::BinaryHeap,
-    cmp::Reverse,
-};
+use std::{cmp::Reverse, collections::BinaryHeap};
 
 use crate::graph::InstructionGraph;
 
@@ -18,12 +15,8 @@ impl Iterator for SimpleTraverser {
         let to_return = self.to_iterate.pop().map(|reversed| reversed.0);
 
         if let Some(to_return) = to_return {
-            self.to_iterate.extend(
-                self.graph
-                    .visit_node(to_return)
-                    .into_iter()
-                    .map(Reverse)
-            );
+            self.to_iterate
+                .extend(self.graph.visit_node(to_return).into_iter().map(Reverse));
         }
 
         to_return
@@ -34,10 +27,7 @@ impl From<InstructionGraph> for SimpleTraverser {
     fn from(graph: InstructionGraph) -> Self {
         let to_iterate = graph.get_starting_nodes().map(Reverse).collect();
 
-        SimpleTraverser {
-            graph,
-            to_iterate,
-        }
+        SimpleTraverser { graph, to_iterate }
     }
 }
 

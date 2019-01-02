@@ -1,13 +1,7 @@
-use std::{
-    error::Error,
-    num::NonZeroUsize,
-};
 use serde_derive::Deserialize;
+use std::{error::Error, num::NonZeroUsize};
 
-use advent_utils::{
-    get_custom_config,
-    Part,
-};
+use advent_utils::{get_custom_config, Part};
 
 mod graph;
 mod instruction;
@@ -17,17 +11,14 @@ mod workers;
 mod traversers;
 
 use self::parser::parse_graph;
-use self::traversers::{
-    PooledTraverser,
-    SimpleTraverser,
-};
+use self::traversers::{PooledTraverser, SimpleTraverser};
 
 #[derive(Debug, Deserialize)]
 struct Config {
     input_file: String,
     part: Part,
     work_price_delta: Option<i32>,
-    workers: Option<NonZeroUsize>
+    workers: Option<NonZeroUsize>,
 }
 
 fn main() -> Result<(), Box<Error>> {
@@ -39,15 +30,18 @@ fn main() -> Result<(), Box<Error>> {
             let traverser = SimpleTraverser::from(graph);
 
             println!("Suggested work order is: {}", traverser.collect::<String>());
-        },
+        }
         Part::Two => {
             let delta = c.work_price_delta.unwrap();
             let workers = c.workers.or_else(|| NonZeroUsize::new(2)).unwrap();
 
             let traverser = PooledTraverser::new(graph, delta, workers);
 
-            println!("work will be all done at: {}", traverser.graph_finish_time())
-        },
+            println!(
+                "work will be all done at: {}",
+                traverser.graph_finish_time()
+            )
+        }
     }
 
     Ok(())

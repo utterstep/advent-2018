@@ -40,9 +40,7 @@ impl Pool {
     pub fn new(n_workers: NonZeroUsize) -> Self {
         let workers = (0..n_workers.get()).map(|_| Worker::default()).collect();
 
-        Self {
-            workers
-        }
+        Self { workers }
     }
 
     pub fn take_work(&mut self, start_at: i32, work_duration: i32) -> i32 {
