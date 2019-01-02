@@ -10,7 +10,7 @@ mod world;
 
 use crate::world::World;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct Config {
     part: Part,
     input_file: String,
@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<Error>> {
                 "Largest closed area has size of {}",
                 world.largest_finite_area().unwrap()
             );
-        }
+        },
         Part::Two => {
             let max_distance = config
                 .max_distance
@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<Error>> {
                 "Safe area has size of {}",
                 world.safe_area_size(max_distance),
             )
-        }
+        },
     };
 
     Ok(())
