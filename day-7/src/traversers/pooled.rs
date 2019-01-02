@@ -6,7 +6,7 @@ use std::{
 
 use crate::{
     graph::InstructionGraph,
-    workers::Pool
+    workers::Pool,
 };
 
 const LETTER_A: i32 = 'A' as i32;
@@ -18,6 +18,8 @@ const LETTER_A: i32 = 'A' as i32;
 /// assert_eq!(letter_number('Z'), 26);
 /// ```
 fn letter_number(letter: char) -> i32 {
+    debug_assert!(letter <= 'Z');
+    debug_assert!(letter >= 'A');
     letter as i32 - LETTER_A + 1
 }
 
@@ -114,6 +116,17 @@ mod tests {
         assert_eq!(
             PooledTraverser::new(graph, 0, NonZeroUsize::new(2).unwrap()).graph_finish_time(),
             12
-        )
+        );
+
+        let mut graph = InstructionGraph::new();
+
+        graph.add_link('C', 'F');
+        graph.add_link('C', 'B');
+        graph.add_link('B', 'G');
+
+        assert_eq!(
+            PooledTraverser::new(graph, 2, NonZeroUsize::new(2).unwrap()).graph_finish_time(),
+            18
+        );
     }
 }
