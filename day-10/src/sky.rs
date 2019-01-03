@@ -9,9 +9,7 @@ pub(crate) struct Sky {
 
 impl Sky {
     pub fn new(stars: Vec<Star>) -> Self {
-        Self {
-            stars,
-        }
+        Self { stars }
     }
 
     fn x_bounds(&self) -> (i64, i64) {
@@ -69,7 +67,10 @@ impl fmt::Display for Sky {
             rows[(y_max - star.position.y) as usize][(x_max - star.position.x) as usize] = '•';
         }
 
-        let lines = rows.iter().rev().map(|row| row.iter().rev().collect::<String>());
+        let lines = rows
+            .iter()
+            .rev()
+            .map(|row| row.iter().rev().collect::<String>());
         let output = lines.collect::<Vec<_>>().join("\n");
 
         write!(f, "{}", output)
