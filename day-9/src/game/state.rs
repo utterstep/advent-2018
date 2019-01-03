@@ -25,24 +25,25 @@ macro_rules! add_marble {
 
 macro_rules! move_wrapping {
     (prev, $cursor: expr) => {
-        call_method_wrapping!(CursorMut::move_prev, &mut $cursor);
+        call_method_wrapping!(CursorMut::move_prev, $cursor);
     };
     (next, $cursor: expr) => {
-        call_method_wrapping!(CursorMut::move_next, &mut $cursor);
+        call_method_wrapping!(CursorMut::move_next, $cursor);
     };
 }
 
 macro_rules! call_method_wrapping {
     ($method: path, $cursor: expr) => {
-        $method($cursor);
+        $method(&mut $cursor);
         if $cursor.is_null() {
-            $method($cursor);
+            $method(&mut $cursor);
         }
     };
 }
 
 pub(crate) struct GameState {
     players: Vec<i64>,
+    #[allow(dead_code)]
     marbles: LinkedList<MarbleAdapter>,
 }
 
@@ -69,7 +70,7 @@ impl GameState {
     }
 
     pub fn high_score(&self) -> Option<i64> {
-        self.players.iter().max().map(|score| *score)
+        self.players.iter().max().cloned()
     }
 }
 
