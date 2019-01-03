@@ -1,0 +1,10 @@
+[package]
+name = "day-9"
+version = "0.1.0"
+authors = ["Vlad Stepanov <8uk.8ak@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+advent-utils = { path = "../advent-utils" }
+
+intrusive-collections = "0.7"
