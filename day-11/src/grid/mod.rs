@@ -8,7 +8,7 @@ use self::cell::Cell;
 #[derive(Debug)]
 pub(crate) struct Grid {
     size: usize,
-    cells: Vec<Cell>,
+    cells: Vec<i64>,
 }
 
 fn iter_product<T1: Copy, T2: Copy>(
@@ -31,7 +31,7 @@ impl Grid {
 
         for y in 0..size {
             for x in 0..size {
-                cells.push(Cell::new(x, y, serial));
+                cells.push(Cell::new(x, y, serial).power());
             }
         }
 
@@ -57,7 +57,7 @@ impl Grid {
         )
         .collect::<Vec<_>>()
         .par_iter()
-        .map(|(x, y)| ((*x, *y), self.quadrant_sum(*x, *y, quadrant_side)))
+        .map(|&(x, y)| ((x, y), self.quadrant_sum(x, y, quadrant_side)))
         .max_by_key(|(_coords, power)| *power)
     }
 
@@ -66,7 +66,6 @@ impl Grid {
             .map(|y| {
                 self[(x..(x + quadrant_side), y)]
                     .iter()
-                    .map(|cell| cell.power())
                     .sum::<i64>()
             })
             .sum()
@@ -74,7 +73,7 @@ impl Grid {
 }
 
 impl Index<Coordinates> for Grid {
-    type Output = Cell;
+    type Output = i64;
 
     fn index(&self, index: Coordinates) -> &Self::Output {
         let (x, y) = index;
@@ -87,7 +86,7 @@ impl Index<Coordinates> for Grid {
 }
 
 impl Index<(Range<usize>, usize)> for Grid {
-    type Output = [Cell];
+    type Output = [i64];
 
     fn index(&self, index: (Range<usize>, usize)) -> &Self::Output {
         let (x, y) = index;
@@ -110,15 +109,6 @@ mod tests {
     #[test]
     fn test_grid() {
         let grid = Grid::new(4, 1);
-
-        for x in 0..=4 {
-            for y in 0..=4 {
-                let cell = &grid[(x, y)];
-
-                assert_eq!(cell.x, x);
-                assert_eq!(cell.y, y);
-            }
-        }
 
         let range_indexed = grid[(0..3, 3)].iter().collect::<Vec<_>>();
 
