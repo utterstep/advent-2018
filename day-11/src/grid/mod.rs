@@ -110,6 +110,14 @@ mod tests {
     fn test_grid() {
         let grid = Grid::new(4, 1);
 
+        for x in 0..=4 {
+            for y in 0..=4 {
+                let cell_power = grid[(x, y)];
+
+                assert_eq!(cell_power, Cell::new(x, y, 1).power());
+            }
+        }
+
         let range_indexed = grid[(0..3, 3)].iter().collect::<Vec<_>>();
 
         assert_eq!(
