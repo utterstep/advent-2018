@@ -26,6 +26,11 @@ impl Star {
         self.position.x += self.velocity.x_vel;
         self.position.y += self.velocity.y_vel;
     }
+
+    pub fn rewind(&mut self) {
+        self.position.x -= self.velocity.x_vel;
+        self.position.y -= self.velocity.y_vel;
+    }
 }
 
 #[derive(Debug)]
@@ -127,6 +132,85 @@ mod tests {
         star.advance();
         assert_eq!(star.position, Position { x: 0, y: 6 });
         assert_eq!(star.velocity, Velocity { x_vel: 0, y_vel: 3 });
+
+        let mut star = Star {
+            position: Position { x: 5, y: 7 },
+            velocity: Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            },
+        };
+
+        star.advance();
+        assert_eq!(star.position, Position { x: 4, y: 4 });
+        assert_eq!(
+            star.velocity,
+            Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            }
+        );
+
+        star.advance();
+        assert_eq!(star.position, Position { x: 3, y: 1 });
+        assert_eq!(
+            star.velocity,
+            Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            }
+        );
+    }
+
+    #[test]
+    fn test_star_rewind() {
+        let mut star = Star {
+            position: Position { x: 5, y: 7 },
+            velocity: Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            },
+        };
+
+        star.advance();
+        assert_eq!(star.position, Position { x: 4, y: 4 });
+        assert_eq!(
+            star.velocity,
+            Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            }
+        );
+
+        star.advance();
+        assert_eq!(star.position, Position { x: 3, y: 1 });
+        assert_eq!(
+            star.velocity,
+            Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            }
+        );
+
+        star.rewind();
+        assert_eq!(star.position, Position { x: 4, y: 4 });
+        assert_eq!(
+            star.velocity,
+            Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            }
+        );
+
+        star.rewind();
+        assert_eq!(star.position, Position { x: 5, y: 7 });
+        assert_eq!(
+            star.velocity,
+            Velocity {
+                x_vel: -1,
+                y_vel: -3,
+            }
+        );
     }
 
     #[test]

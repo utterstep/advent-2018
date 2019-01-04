@@ -7,13 +7,15 @@ pub(crate) struct Sky {
     stars: Vec<Star>,
 }
 
+const VISUALIZATION_LIMIT: i64 = 70;
+
 impl Sky {
     pub fn new(stars: Vec<Star>) -> Self {
         Self { stars }
     }
 
     fn x_bounds(&self) -> (i64, i64) {
-        // TODO: minmax via reduce?
+        // TODO: minmax via reduce? also merge with advancing logic
         let x_min = self.stars.iter().map(|star| star.position.x).min().unwrap();
         let x_max = self.stars.iter().map(|star| star.position.x).max().unwrap();
 
@@ -21,7 +23,7 @@ impl Sky {
     }
 
     fn y_bounds(&self) -> (i64, i64) {
-        // TODO: minmax via reduce?
+        // TODO: minmax via reduce? also merge with advancing logic
         let y_min = self.stars.iter().map(|star| star.position.y).min().unwrap();
         let y_max = self.stars.iter().map(|star| star.position.y).max().unwrap();
 
@@ -34,22 +36,40 @@ impl Sky {
         y_max - y_min
     }
 
-    pub fn advance_to_message(&mut self, target_span: i64, visualize: bool) -> i64 {
+    pub fn advance_to_message(&mut self, visualize: bool) -> i64 {
+        // assume that message is visible in the y-span local minimum
         let mut steps_taken = 0;
+        let mut previous_span = self.y_span();
+        let mut current_span = previous_span;
 
-        while self.y_span() > target_span {
+        while current_span <= previous_span {
             steps_taken += 1;
 
-            for star in self.stars.iter_mut() {
-                star.advance();
-            }
+            self.advance();
 
-            if visualize && self.y_span() < 70 {
+            if visualize && current_span < VISUALIZATION_LIMIT {
                 println!("{}\n\n{}\n\n", "=".repeat(100), self);
             }
+
+            previous_span = current_span;
+            current_span = self.y_span();
         }
 
-        steps_taken
+        self.rewind();
+
+        steps_taken - 1
+    }
+
+    fn advance(&mut self) {
+        for star in self.stars.iter_mut() {
+            star.advance();
+        }
+    }
+
+    fn rewind(&mut self) {
+        for star in self.stars.iter_mut() {
+            star.rewind();
+        }
     }
 }
 

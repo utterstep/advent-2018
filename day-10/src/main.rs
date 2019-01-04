@@ -13,7 +13,6 @@ use self::sky::Sky;
 struct Config {
     part: Part,
     input_file: String,
-    target_span: i64,
     #[serde(default)]
     visualize: bool,
 }
@@ -25,12 +24,12 @@ fn main() -> Result<(), Box<Error>> {
 
     match config.part {
         Part::One => {
-            sky.advance_to_message(config.target_span, config.visualize);
+            sky.advance_to_message(config.visualize);
 
             println!("{}", sky);
         }
         Part::Two => {
-            let steps = sky.advance_to_message(config.target_span, config.visualize);
+            let steps = sky.advance_to_message(config.visualize);
 
             println!("resulting message:\n\n{}\n", sky);
             println!("appeared after {} seconds", steps);
