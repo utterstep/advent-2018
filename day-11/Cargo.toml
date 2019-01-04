@@ -1,0 +1,13 @@
+[package]
+name = "day-11"
+version = "0.1.0"
+authors = ["Vlad Stepanov <8uk.8ak@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+advent-utils = { path = "../advent-utils" }
+
+rayon = "1.0"
+
+serde = "1"
+serde_derive = "1"
