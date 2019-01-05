@@ -15,8 +15,7 @@ fn iter_product<T1: Copy, T2: Copy>(
     iter: impl Iterator<Item = T1> + Clone,
     other_iter: impl Iterator<Item = T2>,
 ) -> impl Iterator<Item = (T1, T2)> {
-    other_iter
-        .flat_map(move |i| iter.clone().map(move |j| (j, i)))
+    other_iter.flat_map(move |i| iter.clone().map(move |j| (j, i)))
 }
 
 pub(crate) type Coordinates = (usize, usize);
@@ -35,10 +34,7 @@ impl Grid {
             }
         }
 
-        Self {
-            size,
-            cells,
-        }
+        Self { size, cells }
     }
 
     pub fn find_global_maximum(&self) -> Option<(usize, QuadrantPower)> {
@@ -47,7 +43,6 @@ impl Grid {
         (1..(self.size - 1))
             .map(|quad_side| (quad_side, self.find_maximum(quad_side).unwrap()))
             .max_by_key(|(_side, (_coords, power))| *power)
-
     }
 
     pub fn find_maximum(&self, quadrant_side: usize) -> Option<QuadrantPower> {
@@ -63,11 +58,7 @@ impl Grid {
 
     fn quadrant_sum(&self, x: usize, y: usize, quadrant_side: usize) -> i64 {
         (y..(y + quadrant_side))
-            .map(|y| {
-                self[(x..(x + quadrant_side), y)]
-                    .iter()
-                    .sum::<i64>()
-            })
+            .map(|y| self[(x..(x + quadrant_side), y)].iter().sum::<i64>())
             .sum()
     }
 }
@@ -153,4 +144,3 @@ mod tests {
         assert_eq!(grid.find_maximum(3).unwrap(), ((21, 61), 30));
     }
 }
-
