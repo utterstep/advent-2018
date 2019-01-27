@@ -44,8 +44,9 @@ impl GreenhouseState {
     pub fn growth_cycle(&mut self) {
         self.assure_borders();
 
-        self.state
-            .windows(5)
+        // self.state
+        //     .windows(5)
+        unimplemented!()
     }
 
     fn assure_borders(&mut self) {
