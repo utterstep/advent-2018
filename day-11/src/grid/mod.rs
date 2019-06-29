@@ -1,7 +1,3 @@
-use std::ops::{Index, Range};
-
-use rayon::prelude::*;
-
 mod cell;
 use self::cell::Cell;
 
@@ -9,6 +5,7 @@ use self::cell::Cell;
 pub(crate) struct Grid {
     size: usize,
     cells: Vec<i64>,
+    sums: Vec<i64>,
 }
 
 fn iter_product<T1: Copy, T2: Copy>(
@@ -22,74 +19,80 @@ pub(crate) type Coordinates = (usize, usize);
 
 pub(crate) type QuadrantPower = (Coordinates, i64);
 
+macro_rules! idx {
+    ($x: expr, $y: expr, $size: expr) => {
+        $y * $size + $x;
+    };
+}
+
+fn make_sums_table(size: usize, cells: &Vec<i64>) -> Vec<i64> {
+    debug_assert_eq!((cells.len() as f64).sqrt() as usize, size);
+
+    let mut sums = vec![0; cells.len()];
+    sums[0] = cells[0];
+
+    for x in 1..size {
+        sums[x] = sums[x - 1] + cells[x];
+    }
+
+    for y in 1..size {
+        sums[idx!(0, y, size)] = sums[idx!(0, y - 1, size)] + cells[idx!(0, y, size)];
+    }
+
+    for x in 1..size {
+        for y in 1..size {
+            sums[idx!(x, y, size)] =
+                sums[idx!(x - 1, y, size)] +
+                sums[idx!(x, y - 1, size)] +
+                cells[idx!(x, y, size)] -
+                sums[idx!(x - 1, y - 1, size)]
+            ;
+        }
+    }
+
+    sums
+}
+
 impl Grid {
     pub fn new(size: usize, serial: i64) -> Self {
-        // FIXME: currently storing extra (2 * size - 1) cells for computations simplicity
-        let size = size + 1;
         let mut cells = Vec::with_capacity(size * size);
 
         for y in 0..size {
             for x in 0..size {
-                cells.push(Cell::new(x, y, serial).power());
+                cells.push(Cell::new(x + 1, y + 1, serial).power());
             }
         }
 
-        Self { size, cells }
+        let sums = make_sums_table(size, &cells);
+
+        Self {
+            size,
+            cells,
+            sums,
+        }
     }
 
     pub fn find_global_maximum(&self) -> Option<(usize, QuadrantPower)> {
-        // FIXME: should be something more intelligent, than bruteforce
-        // but as for now it takes ~9 seconds on i7-8750H, so be it
-        (1..(self.size - 1))
+        (1..self.size)
             .map(|quad_side| (quad_side, self.find_maximum(quad_side).unwrap()))
             .max_by_key(|(_side, (_coords, power))| *power)
     }
 
     pub fn find_maximum(&self, quadrant_side: usize) -> Option<QuadrantPower> {
         iter_product(
-            1..(self.size - quadrant_side),
-            1..(self.size - quadrant_side),
+            0..(self.size - quadrant_side),
+            0..(self.size - quadrant_side),
         )
-        .collect::<Vec<_>>()
-        .par_iter()
-        .map(|&(x, y)| ((x, y), self.quadrant_sum(x, y, quadrant_side)))
+        // TODO: why the hell there is -2 bias?.. like hell I know. Investigate
+        .map(|(x, y)| ((x + 2, y + 2), self.quadrant_sum(x, y, quadrant_side)))
         .max_by_key(|(_coords, power)| *power)
     }
 
     fn quadrant_sum(&self, x: usize, y: usize, quadrant_side: usize) -> i64 {
-        (y..(y + quadrant_side))
-            .map(|y| self[(x..(x + quadrant_side), y)].iter().sum::<i64>())
-            .sum()
-    }
-}
-
-impl Index<Coordinates> for Grid {
-    type Output = i64;
-
-    fn index(&self, index: Coordinates) -> &Self::Output {
-        let (x, y) = index;
-
-        debug_assert!(x < self.size);
-        debug_assert!(y < self.size);
-
-        &self.cells[y * self.size + x]
-    }
-}
-
-impl Index<(Range<usize>, usize)> for Grid {
-    type Output = [i64];
-
-    fn index(&self, index: (Range<usize>, usize)) -> &Self::Output {
-        let (x, y) = index;
-
-        debug_assert!(x.start < self.size);
-        debug_assert!(x.end < self.size);
-        debug_assert!(y < self.size);
-
-        let start = y * self.size + x.start;
-        let end = y * self.size + x.end;
-
-        &self.cells[start..end]
+        self.sums[idx!(x + quadrant_side, y + quadrant_side, self.size)] -
+        self.sums[idx!(x, y + quadrant_side, self.size)] -
+        self.sums[idx!(x + quadrant_side, y, self.size)] +
+        self.sums[idx!(x, y, self.size)]
     }
 }
 
@@ -98,26 +101,56 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_grid() {
-        let grid = Grid::new(4, 1);
-
-        for x in 0..=4 {
-            for y in 0..=4 {
-                let cell_power = grid[(x, y)];
-
-                assert_eq!(cell_power, Cell::new(x, y, 1).power());
-            }
-        }
-
-        let range_indexed = grid[(0..3, 3)].iter().collect::<Vec<_>>();
+    fn test_make_sums_table() {
+        let zeros = vec![
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+        ];
+        let zeros_sum = vec![
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+        ];
 
         assert_eq!(
-            range_indexed,
-            [&grid[(0, 3)], &grid[(1, 3)], &grid[(2, 3)],]
+            make_sums_table(3, &zeros),
+            zeros_sum,
+        );
+
+        let ones = vec![
+            1, 1, 1,
+            1, 1, 1,
+            1, 1, 1,
+        ];
+        let ones_sum = vec![
+            1, 2, 3,
+            2, 4, 6,
+            3, 6, 9,
+        ];
+
+        assert_eq!(
+            make_sums_table(3, &ones),
+            ones_sum,
+        );
+
+        let increasing = vec![
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9,
+        ];
+        let increasing_sum = vec![
+            1, 3, 6,
+            5, 12, 21,
+            12, 27, 45,
+        ];
+
+        assert_eq!(
+            make_sums_table(3, &increasing),
+            increasing_sum,
         );
     }
 
-    #[test]
     #[test]
     fn test_ranges_product() {
         assert_eq!(
@@ -136,11 +169,20 @@ mod tests {
     }
 
     #[test]
-    fn test_grid_max_examples() {
-        let grid = Grid::new(300, 18);
-        assert_eq!(grid.find_maximum(3).unwrap(), ((33, 45), 29));
+    fn test_grid() {
+        let grid = Grid::new(10, 8);
 
+        assert_eq!(grid.cells[idx!(2, 4, 10)], 4);
+    }
+
+    #[test]
+    fn test_grid_max_examples() {
         let grid = Grid::new(300, 42);
         assert_eq!(grid.find_maximum(3).unwrap(), ((21, 61), 30));
+        assert_eq!(grid.find_global_maximum().unwrap(), (12, ((232, 251), 119)));
+
+        let grid = Grid::new(300, 18);
+        assert_eq!(grid.find_maximum(3).unwrap(), ((33, 45), 29));
+        assert_eq!(grid.find_global_maximum().unwrap(), (16, ((90, 269), 113)));
     }
 }
