@@ -8,3 +8,5 @@ edition = "2018"
 advent-utils = { path = "../advent-utils" }
 
 intrusive-collections = "0.7"
+
+serde = { version = "1", features = ["derive"] }
