@@ -2,7 +2,7 @@ use std::error::Error;
 
 use advent_utils::{get_custom_config, parse_file, Part};
 
-use serde_derive::Deserialize;
+use serde::Deserialize;
 
 mod sky;
 mod star;

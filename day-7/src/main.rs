@@ -1,5 +1,6 @@
-use serde_derive::Deserialize;
 use std::{error::Error, num::NonZeroUsize};
+
+use serde::Deserialize;
 
 use advent_utils::{get_custom_config, Part};
 

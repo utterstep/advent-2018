@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use serde_derive::Deserialize;
+use serde::Deserialize;
 
 use advent_utils::{get_custom_config, Part};
 

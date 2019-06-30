@@ -3,7 +3,6 @@ use serde::{
     de::{DeserializeOwned, Unexpected},
     Deserialize, Deserializer,
 };
-use serde_derive::Deserialize;
 
 #[derive(Debug)]
 pub enum Part {
