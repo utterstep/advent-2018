@@ -7,6 +7,6 @@ edition = "2018"
 [dependencies]
 advent-utils = { path = "../advent-utils" }
 
-intrusive-collections = "0.7"
+intrusive-collections = "0.8"
 
 serde = { version = "1", features = ["derive"] }
