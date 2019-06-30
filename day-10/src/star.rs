@@ -81,12 +81,8 @@ impl FromStr for Star {
             .captures(s)
             .ok_or_else(|| StarParseError::WrongFormat(s.to_owned()))?;
 
-        let x = matches["x"]
-            .parse()
-            .map_err(StarParseError::ParseError)?;
-        let y = matches["y"]
-            .parse()
-            .map_err(StarParseError::ParseError)?;
+        let x = matches["x"].parse().map_err(StarParseError::ParseError)?;
+        let y = matches["y"].parse().map_err(StarParseError::ParseError)?;
         let x_vel = matches["x_vel"]
             .parse()
             .map_err(StarParseError::ParseError)?;

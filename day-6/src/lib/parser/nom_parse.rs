@@ -2,10 +2,7 @@ use super::Point;
 
 use advent_utils::integer_parser;
 
-use nom::{
-    digit, map, map_res, named, separated_pair, tag,
-    types::CompleteStr,
-};
+use nom::{digit, map, map_res, named, separated_pair, tag, types::CompleteStr};
 
 integer_parser!(parse_i32, i32);
 

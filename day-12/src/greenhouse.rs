@@ -113,7 +113,10 @@ mod tests {
         };
 
         greenhouse.assure_borders();
-        assert_eq!(greenhouse.state, state_parse!("................####........."));
+        assert_eq!(
+            greenhouse.state,
+            state_parse!("................####.........")
+        );
 
         let mut greenhouse = GreenhouseState {
             state: state_parse!(".#"),

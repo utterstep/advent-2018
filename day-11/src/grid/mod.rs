@@ -42,11 +42,8 @@ fn make_sums_table(size: usize, cells: &[i64]) -> Vec<i64> {
     for x in 1..size {
         for y in 1..size {
             sums[idx!(x, y, size)] =
-                sums[idx!(x - 1, y, size)] +
-                sums[idx!(x, y - 1, size)] +
-                cells[idx!(x, y, size)] -
-                sums[idx!(x - 1, y - 1, size)]
-            ;
+                sums[idx!(x - 1, y, size)] + sums[idx!(x, y - 1, size)] + cells[idx!(x, y, size)]
+                    - sums[idx!(x - 1, y - 1, size)];
         }
     }
 
@@ -65,11 +62,7 @@ impl Grid {
 
         let sums = make_sums_table(size, &cells);
 
-        Self {
-            size,
-            cells,
-            sums,
-        }
+        Self { size, cells, sums }
     }
 
     pub fn find_global_maximum(&self) -> Option<(usize, QuadrantPower)> {
@@ -102,10 +95,10 @@ impl Grid {
         let x = x - 1;
         let y = y - 1;
 
-        self.sums[idx!(x + quadrant_side, y + quadrant_side, self.size)] -
-        self.sums[idx!(x, y + quadrant_side, self.size)] -
-        self.sums[idx!(x + quadrant_side, y, self.size)] +
-        self.sums[idx!(x, y, self.size)]
+        self.sums[idx!(x + quadrant_side, y + quadrant_side, self.size)]
+            - self.sums[idx!(x, y + quadrant_side, self.size)]
+            - self.sums[idx!(x + quadrant_side, y, self.size)]
+            + self.sums[idx!(x, y, self.size)]
     }
 }
 
@@ -115,53 +108,41 @@ mod tests {
 
     #[test]
     fn test_make_sums_table() {
-        let zeros = vec![
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0,
-        ];
-        let zeros_sum = vec![
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0,
-        ];
+        // 0 0 0
+        // 0 0 0
+        // 0 0 0
+        // =>
+        // 0 0 0
+        // 0 0 0
+        // 0 0 0
+        let zeros = vec![0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let zeros_sum = vec![0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        assert_eq!(
-            make_sums_table(3, &zeros),
-            zeros_sum,
-        );
+        assert_eq!(make_sums_table(3, &zeros), zeros_sum,);
 
-        let ones = vec![
-            1, 1, 1,
-            1, 1, 1,
-            1, 1, 1,
-        ];
-        let ones_sum = vec![
-            1, 2, 3,
-            2, 4, 6,
-            3, 6, 9,
-        ];
+        // 1 1 1
+        // 1 1 1
+        // 1 1 1
+        // =>
+        // 1 2 3
+        // 2 4 6
+        // 3 6 9
+        let ones = vec![1, 1, 1, 1, 1, 1, 1, 1, 1];
+        let ones_sum = vec![1, 2, 3, 2, 4, 6, 3, 6, 9];
 
-        assert_eq!(
-            make_sums_table(3, &ones),
-            ones_sum,
-        );
+        assert_eq!(make_sums_table(3, &ones), ones_sum,);
 
-        let increasing = vec![
-            1, 2, 3,
-            4, 5, 6,
-            7, 8, 9,
-        ];
-        let increasing_sum = vec![
-            1, 3, 6,
-            5, 12, 21,
-            12, 27, 45,
-        ];
+        // 1 2 3
+        // 4 5 6
+        // 7 8 9
+        // =>
+        //  1  3  6
+        //  5 12 21
+        // 12 27 45
+        let increasing = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let increasing_sum = vec![1, 3, 6, 5, 12, 21, 12, 27, 45];
 
-        assert_eq!(
-            make_sums_table(3, &increasing),
-            increasing_sum,
-        );
+        assert_eq!(make_sums_table(3, &increasing), increasing_sum,);
     }
 
     #[test]
