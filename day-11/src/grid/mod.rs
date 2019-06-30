@@ -80,15 +80,28 @@ impl Grid {
 
     pub fn find_maximum(&self, quadrant_side: usize) -> Option<QuadrantPower> {
         iter_product(
-            0..(self.size - quadrant_side),
-            0..(self.size - quadrant_side),
+            0..=(self.size - quadrant_side),
+            0..=(self.size - quadrant_side),
         )
-        // TODO: why the hell there is -2 bias?.. like hell I know. Investigate
-        .map(|(x, y)| ((x + 2, y + 2), self.quadrant_sum(x, y, quadrant_side)))
+        // Re: previously next code snipped had +2 bias
+        // After a good night sleep I understood this weirdness:
+        // * first +1 is obviously from Cell creation (see Grid::new)
+        // * second is from Grid::quadrant_sum(x, y, side) being really
+        //   a sum from x + 1, y + 1 to x + side, y + side
+        .map(|(x, y)| ((x + 1, y + 1), self.quadrant_sum(x, y, quadrant_side)))
         .max_by_key(|(_coords, power)| *power)
     }
 
     fn quadrant_sum(&self, x: usize, y: usize, quadrant_side: usize) -> i64 {
+        // FIXME: this `if` has ~1.8x performance penalty (33ms vs 18ms)
+        // and is used here only for correctness sake
+        if x & y == 0 {
+            return self.sums[idx!(x, y, self.size)];
+        }
+
+        let x = x - 1;
+        let y = y - 1;
+
         self.sums[idx!(x + quadrant_side, y + quadrant_side, self.size)] -
         self.sums[idx!(x, y + quadrant_side, self.size)] -
         self.sums[idx!(x + quadrant_side, y, self.size)] +
