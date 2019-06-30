@@ -25,7 +25,7 @@ macro_rules! idx {
     };
 }
 
-fn make_sums_table(size: usize, cells: &Vec<i64>) -> Vec<i64> {
+fn make_sums_table(size: usize, cells: &[i64]) -> Vec<i64> {
     debug_assert_eq!((cells.len() as f64).sqrt() as usize, size);
 
     let mut sums = vec![0; cells.len()];

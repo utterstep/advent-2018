@@ -3,7 +3,7 @@ use super::Point;
 use advent_utils::integer_parser;
 
 use nom::{
-    call, digit, error_position, map, map_res, named, separated_pair, tag, tuple_parser,
+    digit, map, map_res, named, separated_pair, tag,
     types::CompleteStr,
 };
 

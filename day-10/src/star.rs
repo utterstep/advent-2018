@@ -83,16 +83,16 @@ impl FromStr for Star {
 
         let x = matches["x"]
             .parse()
-            .map_err(|e| StarParseError::ParseError(e))?;
+            .map_err(StarParseError::ParseError)?;
         let y = matches["y"]
             .parse()
-            .map_err(|e| StarParseError::ParseError(e))?;
+            .map_err(StarParseError::ParseError)?;
         let x_vel = matches["x_vel"]
             .parse()
-            .map_err(|e| StarParseError::ParseError(e))?;
+            .map_err(StarParseError::ParseError)?;
         let y_vel = matches["y_vel"]
             .parse()
-            .map_err(|e| StarParseError::ParseError(e))?;
+            .map_err(StarParseError::ParseError)?;
 
         Ok(Star {
             position: Position { x, y },

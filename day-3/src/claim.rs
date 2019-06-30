@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use nom::{call, do_parse, error_position, map_res, named, tag, types::CompleteStr};
+use nom::{do_parse, map_res, named, tag, types::CompleteStr};
 
 pub(crate) type NomError = nom::ErrorKind;
 
