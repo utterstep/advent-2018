@@ -6,7 +6,7 @@ mod node;
 
 use self::node::Node;
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;
     let input_data = read_file(config.input_file)?;
     let mut node = Node::from_iter(&mut input_data.split_whitespace().map(|n| n.parse().unwrap()))?;

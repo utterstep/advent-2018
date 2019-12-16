@@ -7,7 +7,7 @@ use std::{
 
 use crate::claim::Claim;
 
-fn read_file<P: AsRef<Path>>(p: P) -> Result<String, Box<Error>> {
+fn read_file<P: AsRef<Path>>(p: P) -> Result<String, Box<dyn Error>> {
     let file = File::open(p)?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
@@ -16,7 +16,7 @@ fn read_file<P: AsRef<Path>>(p: P) -> Result<String, Box<Error>> {
     Ok(contents)
 }
 
-pub fn from_file<P: AsRef<Path>>(p: P) -> Result<Vec<Claim>, Box<Error>> {
+pub fn from_file<P: AsRef<Path>>(p: P) -> Result<Vec<Claim>, Box<dyn Error>> {
     let contents = read_file(p)?;
 
     Ok(contents

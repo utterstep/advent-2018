@@ -1,10 +1,10 @@
 use std::{collections::VecDeque, str::FromStr};
 
-use crate::{errors::greenhouse::GreenhouseParseError, plants::PlantState, rules::Rule};
+use crate::{errors::greenhouse::GreenhouseParseError, plants::PlantState};
 
 pub(crate) struct GreenhouseState {
     state: VecDeque<PlantState>,
-    rules: Vec<Rule>,
+    rules: Vec<u32>,
 }
 
 const INITIAL_STATE_PREFIX: &str = "initial state: ";

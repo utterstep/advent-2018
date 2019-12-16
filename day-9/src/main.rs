@@ -15,7 +15,7 @@ struct Config {
     max_marbles: i64,
 }
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let config = get_custom_config::<Config>()?;
 
     let marbles_count = match config.part {

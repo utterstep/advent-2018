@@ -1,8 +1,6 @@
 [workspace]
 
 members = [
-    "advent-utils",
-
     "day-1-1",
     "day-1-2",
     "day-2",

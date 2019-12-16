@@ -12,7 +12,7 @@ nom = "^4.1"
 clap = "2.32"
 
 [dependencies.advent-utils]
-path = "../advent-utils"
+git = "https://github.com/utter-step/advent-utils"
 
 default-features = false
 features = ["nom-macro"]

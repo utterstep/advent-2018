@@ -13,11 +13,11 @@ nom = "^4.1"
 serde = { version = "1", features = ["derive"] }
 
 [dependencies.advent-utils]
-path = "../advent-utils"
+git = "https://github.com/utter-step/advent-utils"
 features = ["nom-macro"]
 
 [dev-dependencies]
-criterion = "0.2"
+criterion = "0.3"
 
 [[bench]]
 name = "bench_parser"

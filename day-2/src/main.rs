@@ -19,7 +19,7 @@ fn get_problem_input(config: &Config) -> IOResult<String> {
     Ok(raw_ids)
 }
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;
     let input = get_problem_input(&config)?;
 

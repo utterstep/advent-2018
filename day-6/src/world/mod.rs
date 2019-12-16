@@ -39,11 +39,13 @@ impl World {
     }
 
     fn compute_points_area(&mut self) {
+        let mut points = self.points.iter_mut().collect::<Vec<_>>();
+
         for (x, y) in &self.boundaries {
             let mut min_distance = i32::max_value();
             let mut closest = None;
 
-            for (point, area) in self.points.iter_mut() {
+            for (point, area) in points.iter_mut() {
                 let distance = point.distance_to(x, y);
 
                 if distance == min_distance {
@@ -60,7 +62,7 @@ impl World {
                     self.infinite_areas_centers.insert((*point).clone());
                 }
 
-                *area += 1;
+                **area += 1;
             }
         }
     }
@@ -76,11 +78,13 @@ impl World {
     }
 
     pub fn safe_area_size(&self, max_distance: i32) -> usize {
+        let points = self.points.keys().collect::<Vec<_>>();
+
         self.boundaries
             .into_iter()
             .filter(|(x, y)| {
-                self.points
-                    .keys()
+                points
+                    .iter()
                     .map(|point| point.distance_to(*x, *y))
                     .sum::<i32>()
                     < max_distance

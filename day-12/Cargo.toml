@@ -5,4 +5,6 @@ authors = ["Vlad Stepanov <8uk.8ak@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-advent-utils = { path = "../advent-utils" }
+advent-utils = { git = "https://github.com/utter-step/advent-utils" }
+
+bitvec = "0.15"

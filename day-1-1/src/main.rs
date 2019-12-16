@@ -2,7 +2,7 @@ use std::{error::Error, fs::File, io::prelude::*};
 
 const INPUT_FILE: &str = "input.txt";
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let mut f = File::open(INPUT_FILE)?;
     let mut buf = String::with_capacity(f.metadata()?.len() as usize);
 

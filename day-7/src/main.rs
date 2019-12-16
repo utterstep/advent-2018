@@ -22,7 +22,7 @@ struct Config {
     workers: Option<NonZeroUsize>,
 }
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let c = get_custom_config::<Config>()?;
     let graph = parse_graph(c.input_file);
 

@@ -6,7 +6,7 @@ mod part_one;
 mod part_two;
 mod reactor;
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;
 
     let polymer = read_file(&config.input_file)?;

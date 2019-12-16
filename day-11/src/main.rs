@@ -18,7 +18,7 @@ const GRID_SIZE: usize = 300;
 
 const PART_ONE_QUADRANT_SIDE: usize = 3;
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let config = get_custom_config::<Config>()?;
     let grid = Grid::new(GRID_SIZE, config.serial);
 

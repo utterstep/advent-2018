@@ -17,7 +17,7 @@ struct Config {
     max_distance: Option<i32>,
 }
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let config = get_custom_config::<Config>()?;
     let points: Vec<Point> = parse_file(&config.input_file)?;
     let world = World::from_points(points);

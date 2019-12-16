@@ -34,7 +34,7 @@ where
     }
 }
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let data = get_data(INPUT_FILE)?;
     let data_cycle = data
         .split_whitespace()

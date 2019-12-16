@@ -22,7 +22,7 @@ fn apply_claims<'a>(claims: impl Iterator<Item = &'a Claim>) -> Fabric {
     fabric
 }
 
-fn main() -> Result<(), Box<Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let yaml = load_yaml!("args.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
